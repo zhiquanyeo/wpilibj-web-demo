@@ -1,0 +1,19 @@
+{
+  "name": "wpilibj-web-demo",
+  "version": "1.0.0",
+  "description": "Web Based WPILibJ Demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhiquanyeo/wpilibj-web-demo.git"
+  },
+  "author": "Zhiquan \"ZQ\" Yeo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhiquanyeo/wpilibj-web-demo/issues"
+  },
+  "homepage": "https://github.com/zhiquanyeo/wpilibj-web-demo#readme"
+}
