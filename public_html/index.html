@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Intro to WPILibJ</title>
+		<script src="js/codemirror/lib/codemirror.js"></script>
+		<link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
+		<script src="js/codemirror/mode/clike/clike.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<!-- Also include the default options file that node will write -->
+	</head>
+	<body>
+		<textarea id="editor"></textarea>
+	</body>
+	<script>
+	var socket = io();
+	var codeEditor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+		lineNumbers: true,
+		mode: 'clike',
+		indentUnit: 4,
+	});
+	</script>
+</html>
