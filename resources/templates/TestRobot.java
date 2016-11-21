@@ -2,23 +2,23 @@ import edu.wpi.first.wpilibj.SampleRobot;
 
 public class TestRobot extends SampleRobot {
 
-	protected void robotInit() {
+    protected void robotInit() {
 
-	}
+    }
 
-	protected void autonomous() {
+    protected void autonomous() {
 
-	}
+    }
 
-	protected void operatorControl() {
+    protected void operatorControl() {
 
-	}
+    }
 
-	protected void test() {
+    protected void test() {
 
-	}
+    }
 
-	protected void disabled() {
-		
-	}
+    protected void disabled() {
+        
+    }
 }

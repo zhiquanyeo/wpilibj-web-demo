@@ -10,6 +10,7 @@
 	</head>
 	<body>
 		<textarea id="editor"></textarea>
+		<button id="compile">Compile</button>
 	</body>
 	<script>
 	var socket = io();
@@ -18,6 +19,11 @@
 		lineNumbers: true,
 		mode: 'text/x-java',
 		indentUnit: 4
+	});
+	var compileBtn = document.getElementById('compile');
+
+	compileBtn.addEventListener('click', function () {
+		socket.emit('compile', codeEditor.getValue());
 	});
 	</script>
 </html>
