@@ -6,16 +6,18 @@
 		<script src="js/codemirror/mode/clike/clike.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<!-- Also include the default options file that node will write -->
+		<script src="js/templates.js"></script>
 	</head>
 	<body>
 		<textarea id="editor"></textarea>
 	</body>
 	<script>
 	var socket = io();
+	document.getElementById('editor').value = FILE_TEMPLATES[0].data;
 	var codeEditor = CodeMirror.fromTextArea(document.getElementById("editor"), {
 		lineNumbers: true,
-		mode: 'clike',
-		indentUnit: 4,
+		mode: 'text/x-java',
+		indentUnit: 4
 	});
 	</script>
 </html>
