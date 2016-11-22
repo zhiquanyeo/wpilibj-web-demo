@@ -2,8 +2,8 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var net = require('net');
 var fs = require('fs');
+var NomadServer = require('./nomad-direct-server.js');
 
 var WORKSPACE_DIR = __dirname + '/workspaces';
 var TEMPLATES_DIR = __dirname + '/resources/templates';
@@ -30,6 +30,8 @@ var templateString = 'var FILE_TEMPLATES = ' + JSON.stringify(templateFileData, 
 fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 
 // Now we should be ready to start
+// Start up the listening server
+var server = new NomadServer(6969);
 
 app.use(express.static('public_html'));
 
