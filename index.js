@@ -48,6 +48,10 @@ io.on('connection', function (socket) {
 	socket.on('compile', function(msg) {
 		console.log('msg: ', msg);
 	});
+    
+    socket.on('mode', function(mode) {
+        server.setRobotMode(mode);
+    })
 });
 
 http.listen(3000, function () {

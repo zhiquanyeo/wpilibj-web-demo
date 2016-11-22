@@ -34,7 +34,7 @@ class NomadDirectServer extends EventEmitter {
             socket.on('error', function (err) {
                 console.log('socket error: ', err);
                 this.d_clients.splice(this.d_clients.indexOf(socket), 1);
-            });
+            }.bind(this));
         }.bind(this));
 
         this.d_socket.listen(this.d_port);
@@ -64,6 +64,7 @@ class NomadDirectServer extends EventEmitter {
     broadcast(message) {
         // Really, only the first socket is of interest to us
         if (!this.d_clients[0]) {
+            console.log('No clients!');
             return;
         }
         var client = this.d_clients[0];

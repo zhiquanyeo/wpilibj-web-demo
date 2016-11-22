@@ -11,6 +11,9 @@
 	<body>
 		<textarea id="editor"></textarea>
 		<button id="compile">Compile</button>
+        <button id="disable">Disable</button>
+        <button id="auto">Autonomous</button>
+        <button id="teleop">TeleOp</button>
 	</body>
 	<script>
 	var socket = io();
@@ -25,5 +28,21 @@
 	compileBtn.addEventListener('click', function () {
 		socket.emit('compile', codeEditor.getValue());
 	});
+    
+    var disableBtn = document.getElementById('disable');
+    var autoBtn = document.getElementById('auto');
+    var teleopBtn = document.getElementById('teleop');
+    
+    disableBtn.addEventListener('click', function () {
+        socket.emit('mode', 'disabled');
+    });
+    
+    autoBtn.addEventListener('click', function () {
+        socket.emit('mode', 'auto');
+    });
+    
+    teleopBtn.addEventListener('click', function () {
+        socket.emit('mode', 'teleop');
+    });
 	</script>
 </html>
