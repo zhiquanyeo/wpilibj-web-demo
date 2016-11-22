@@ -33,6 +33,10 @@ fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 // Start up the listening server
 var server = new NomadServer(6969);
 
+server.on('digitalOutput', function (data) {
+    console.log('DigitalOutput: ', data);
+})
+
 app.use(express.static('public_html'));
 
 app.get('/', function (req, res) {
