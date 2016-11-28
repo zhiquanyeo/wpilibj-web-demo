@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const AppManager = require('./app-manager.js');
 
 class UserManager extends EventEmitter {
 	constructor() {
@@ -8,13 +9,14 @@ class UserManager extends EventEmitter {
 		this.d_clientList = [];
 		this.d_clientMap = {};
 		this.d_activeClient = null;
+		this.d_appManager = new AppManager();
 	}
 
 	get activeClient() {
 		return this.d_activeClient;
 	}
 
-	registerUser(clientId, socket, eventHandlers) {
+	registerUser(clientId, socket) {
 		this.d_clientList.push({
 			id: clientId,
 			socket: socket
@@ -29,12 +31,24 @@ class UserManager extends EventEmitter {
 			this.unregisterUser(clientId);
 		}.bind(this));
 
-		// App specific events
-		if (eventHandlers) {
-			for (var evt in eventHandlers) {
-				socket.on(evt, eventHandlers[evt].bind(null, clientId, socket));
+		// This should probably just handle all the necessary events without the main app knowing
+		socket.on('compile', function (src) {
+			if (this.d_appManager.appRunning) {
+				this.d_appManager.stopApp();
 			}
-		}
+
+			this.d_appManager.compileAndRun(src, clientId, socket);
+		}.bind(this));
+
+		// Set mode that the robot program will use
+		socket.on('mode', function (src) {
+			
+		}.bind(this));
+
+		// Relinquish position in queue and insert at the back
+		socket.on('relinquish', function () {
+			
+		}.bind(this));
 
 		this.updateClientStatus();
 	}

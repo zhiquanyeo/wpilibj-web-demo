@@ -63,90 +63,9 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
 	var clientId = generateUUID();
-
-	var eventHandlers = {
-		'compile': function (clientId, socket, msg) {
-			doCompile(msg, clientId, socket)
-		},
-		'mode': function (clientId, socket, mode) {
-			server.setRobotMode(mode)
-		}
-	};
-
-	userManager.registerUser(clientId, socket, eventHandlers);
+	userManager.registerUser(clientId, socket);
 });
 
 http.listen(3000, function () {
 	console.log('listening on *:3000');
 });
-
-function doCompile(text, clientId, socket) {
-	var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId
-	if (!fs.existsSync(clientWorkspaceDir)) {
-		fs.mkdirSync(clientWorkspaceDir);
-	}
-	fs.writeFileSync(clientWorkspaceDir + '/TestRobot.java', text);
-
-	var task = spawn('javac', [clientWorkspaceDir + '/TestRobot.java'], {
-		cwd: clientWorkspaceDir
-	});
-
-	task.on('error', function (err) {
-		console.log('Failed to start javac');
-		if (socket) {
-			socket.emit('outputMessage', {
-				message: err.toString(),
-				isError: true
-			});
-		}
-	});
-
-	task.on('close', function (data) {
-		var success = true;
-		if (data !== 0) {
-			console.log('There was an error while running javac');
-			if (socket) {
-				socket.emit('outputMessage', {
-					message: 'There was an error compiling the file',
-					isError: true
-				});
-			}
-			success = false;
-		}
-		else {
-			console.log('Compilation successful');
-			if (socket) {
-				socket.emit('outputMessage', {
-					message: 'Compilation Successful!',
-				});
-			}
-
-			// TODO Also emit compile success flag to indicate to app that we are good to go
-		}
-
-		if (socket) {
-			socket.emit('compileComplete', {
-				success: success
-			});
-		}
-	});
-
-	task.stdout.on('data', function (data) {
-		console.log('STDOUT: ', data.toString());
-		if (socket) {
-			socket.emit('outputMessage', {
-				message: data.toString()
-			});
-		}
-	});
-
-	task.stderr.on('data', function (data) {
-		console.log('STDERR: ', data.toString());
-		if (socket) {
-			socket.emit('outputMessage', {
-				message: data.toString(),
-				isError: true
-			});
-		}
-	})
-}

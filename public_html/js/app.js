@@ -5,7 +5,6 @@ var layoutEditorSection = document.getElementById('editor_section');
 var outputSection = document.getElementById('side-output');
 var consoleSection = document.getElementById('side-console');
 var compileButton = document.getElementById('compile-button');
-var runButton = document.getElementById('run-button');
 var clearOutputButton = document.getElementById('clear-output-btn');
 var outputSection = document.getElementById('output-scroll');
 var clearConsoleButton = document.getElementById('clear-console-btn');
