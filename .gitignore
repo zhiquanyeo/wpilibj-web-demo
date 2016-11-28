@@ -40,3 +40,5 @@ jspm_packages
 public_html/js/templates.js
 
 .vscode
+
+workspaces

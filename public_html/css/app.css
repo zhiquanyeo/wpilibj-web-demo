@@ -109,7 +109,6 @@ body {
 }
 
 #side-console {
-	background: pink;
 }
 
 #clear-output-btn {
@@ -135,4 +134,19 @@ body {
 
 #output-scroll .output-item.error {
 	color: red;
+}
+
+#console-button-section {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+}
+
+#console-scroll {
+	position: absolute;
+	top: 25px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+	overflow-y: scroll;
 }

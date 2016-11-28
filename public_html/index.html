@@ -28,7 +28,7 @@
 	        	<div id="sidebar" class="tabs">
 	        		<nav class="tabs__navigation">
 		        		<a class="tabs__link tabs__link--active" href="#side-output">Output</a>
-		        		<a class="tabs__link" href="#side-console">Console</a>
+		        		<a class="tabs__link" href="#side-console">Robot Console</a>
 		        		<a class="tabs__link" href="#side-reference">Reference</a>
 	        		</nav>
 	        		<div class="tabs__section" id="side-output">
@@ -36,7 +36,16 @@
 	        			<div id="output-scroll"></div>
 	        		</div>
 	        		<div class="tabs__section" id="side-console">
-	        			<button id="clear-console-btn">Clear</button>
+	        			<div id="console-button-section">
+	        				<button id="clear-console-btn">Clear</button>
+	        				<span id="mode-label">Robot Mode:</span>
+	        				<span id="current-mode">Disabled</span>
+	        				
+	        				<button id="disable-btn">Disable</button>
+	        				<button id="auto-btn">Autonomous</button>
+	        				<button id="teleop-btn">Teleop</button>
+	        			</div>
+	        			
 	        			<div id="console-scroll"></div>
 	        		</div>
 	        		<div class="tabs__section" id="side-reference">Reference</div>
