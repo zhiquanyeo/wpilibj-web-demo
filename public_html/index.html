@@ -3,46 +3,48 @@
 		<title>Intro to WPILibJ</title>
 		<script src="js/codemirror/lib/codemirror.js"></script>
 		<link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
+		<link rel="stylesheet" href="css/app.css">
 		<script src="js/codemirror/mode/clike/clike.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/split.min.js"></script>
+		<script src="js/puretabs.min.js"></script>
+
 		<!-- Also include the default options file that node will write -->
 		<script src="js/templates.js"></script>
+
+		<!-- Application Logic -->
+		<script src="js/app.js"></script>
 	</head>
 	<body>
-		<textarea id="editor"></textarea>
-		<button id="compile">Compile</button>
-        <button id="disable">Disable</button>
-        <button id="auto">Autonomous</button>
-        <button id="teleop">TeleOp</button>
-	</body>
-	<script>
-	var socket = io();
-	document.getElementById('editor').value = FILE_TEMPLATES[0].data;
-	var codeEditor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-		lineNumbers: true,
-		mode: 'text/x-java',
-		indentUnit: 4
-	});
-	var compileBtn = document.getElementById('compile');
+        <div id="layout_main">
+	        <div id="toolbar">
+	        	<button class="toolbar-button" id="compile-button">Compile</button>
+	        	<button class="toolbar-button" id="run-button">Run</button>
+	        </div>
 
-	compileBtn.addEventListener('click', function () {
-		socket.emit('compile', codeEditor.getValue());
-	});
-    
-    var disableBtn = document.getElementById('disable');
-    var autoBtn = document.getElementById('auto');
-    var teleopBtn = document.getElementById('teleop');
-    
-    disableBtn.addEventListener('click', function () {
-        socket.emit('mode', 'disabled');
-    });
-    
-    autoBtn.addEventListener('click', function () {
-        socket.emit('mode', 'auto');
-    });
-    
-    teleopBtn.addEventListener('click', function () {
-        socket.emit('mode', 'teleop');
-    });
-	</script>
+	        <div id="main_pane">
+	        	<div id="editor_section">
+	        	</div>
+	        	<div id="sidebar" class="tabs">
+	        		<nav class="tabs__navigation">
+		        		<a class="tabs__link tabs__link--active" href="#side-output">Output</a>
+		        		<a class="tabs__link" href="#side-console">Console</a>
+		        		<a class="tabs__link" href="#side-reference">Reference</a>
+	        		</nav>
+	        		<div class="tabs__section" id="side-output">
+	        			<button id="clear-output-btn">Clear</button>
+	        			<div id="output-scroll"></div>
+	        		</div>
+	        		<div class="tabs__section" id="side-console">
+	        			<button id="clear-console-btn">Clear</button>
+	        			<div id="console-scroll"></div>
+	        		</div>
+	        		<div class="tabs__section" id="side-reference">Reference</div>
+	        	</div>
+	        </div>
+
+	        <div id="status_bar">
+	        </div>
+        </div>
+	</body>
 </html>

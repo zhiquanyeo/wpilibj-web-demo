@@ -1,0 +1,138 @@
+body {
+	font-family: Arial, Helvetica;
+}
+
+.CodeMirror {
+	flex: 1 0 auto;
+}
+
+.tabs {
+  border: 1px solid #ddd;
+  position: relative;
+}
+
+.tabs__section {
+  position: absolute;
+  top: 30px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.tabs__navigation {
+  margin-left: 1px;
+  position: absolute;
+  top: 2px;
+  height: 28px;
+}
+
+.tabs__link {
+  display: inline-block;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  padding: .25rem .75rem;
+  color: #B3B3B3;
+  background: #E7E7E7;
+  margin-left: 2px;
+}
+
+.tabs__link:first-child {
+  margin-left: 0;
+}
+
+.tabs__link--active {
+  font-weight: bold;
+  border-bottom-color: #fff;
+  background: #fff;
+  color: #186baa;
+}
+
+
+.gutter {
+  background-color: #eee;
+
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url('../img/vertical.png');
+  cursor: ew-resize;
+}
+
+.gutter.gutter-vertical {
+  background-image: url('../img/horizontal.png');
+  cursor: ns-resize;
+}
+
+.toolbar-button {
+	height: 26px;
+	margin: 7px 10px;
+}
+
+#layout_main {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#toolbar {
+	height: 40px;
+	background: green;
+}
+
+#main_pane {
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: row;
+}
+
+#status_bar {
+	height: 25px;
+	background: aqua;
+}
+
+#editor_section {
+	flex: 1 0 auto;
+	background: purple;
+}
+
+#sidebar {
+	width: 25%;
+}
+
+#side-output {
+}
+
+#side-console {
+	background: pink;
+}
+
+#clear-output-btn {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+}
+
+#output-scroll {
+	position: absolute;
+	top: 25px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+	overflow-y: scroll;
+}
+
+#output-scroll .output-item {
+	margin: 2px;
+	display: block;
+	font-family: Courier, monospace;
+}
+
+#output-scroll .output-item.error {
+	color: red;
+}
