@@ -20,6 +20,14 @@
 	        <div id="toolbar">
 	        	<button class="toolbar-button" id="compile-button">Compile and Run</button>
 	        	<button class="toolbar-button" id="stop-button">Stop App</button>
+                <div class="toolbar-controls">
+                     <span>Robot Mode:</span>
+                     <span id="robot-mode" style="width: 100px; margin-right: 10px; display:inline-block">Disabled</span>
+                     <button id="mode-disable">Disable</button>
+                     <button id="mode-auto">Autonomous</button>
+                     <button id="mode-teleop">Teleop</button>
+                     
+                </div>
 	        </div>
 
 	        <div id="main_pane">
@@ -38,12 +46,6 @@
 	        		<div class="tabs__section" id="side-console">
 	        			<div id="console-button-section">
 	        				<button id="clear-console-btn">Clear</button>
-	        				<span id="mode-label">Robot Mode:</span>
-	        				<span id="current-mode">Disabled</span>
-
-	        				<button id="disable-btn">Disable</button>
-	        				<button id="auto-btn">Autonomous</button>
-	        				<button id="teleop-btn">Teleop</button>
 	        			</div>
 	        			
 	        			<div id="console-scroll"></div>
@@ -53,6 +55,8 @@
 	        </div>
 
 	        <div id="status_bar">
+                <span id="client_ident" style="display:inline-block;margin-right: 10px"></span>
+                <span id="connect_status" class="connection-status"></span>
 	        </div>
         </div>
 	</body>

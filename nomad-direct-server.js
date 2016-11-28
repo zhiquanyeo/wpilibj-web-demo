@@ -18,7 +18,6 @@ class NomadDirectServer extends EventEmitter {
         this.d_clients = [];
 
         this.d_socket = net.createServer(function (socket) {
-            console.log('TCP Connection Received');
             this.d_clients.push(socket);
             socket.setNoDelay(true);
 
@@ -34,10 +33,13 @@ class NomadDirectServer extends EventEmitter {
             socket.on('error', function (err) {
                 console.log('socket error: ', err);
                 this.d_clients.splice(this.d_clients.indexOf(socket), 1);
+                
+                // TODO: Also kill the robot outputs
             }.bind(this));
         }.bind(this));
 
         this.d_socket.listen(this.d_port);
+        console.log('NomadDirect server listening on *:' + port);
     }
 
     setDigitalValue(channel, value) {

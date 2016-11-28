@@ -5,17 +5,35 @@ var layoutEditorSection = document.getElementById('editor_section');
 var outputSection = document.getElementById('side-output');
 var consoleSection = document.getElementById('side-console');
 var compileButton = document.getElementById('compile-button');
+var stopButton = document.getElementById('stop-button');
 var clearOutputButton = document.getElementById('clear-output-btn');
 var outputSection = document.getElementById('output-scroll');
 var clearConsoleButton = document.getElementById('clear-console-btn');
 var consoleSection = document.getElementById('console-scroll');
 
+var disableButton = document.getElementById('mode-disable');
+var autoButton = document.getElementById('mode-auto');
+var teleopButton = document.getElementById('mode-teleop');
+var modeLabel = document.getElementById('robot-mode');
+
 var outputTab = document.getElementById('output-tab');
 var consoleTab = document.getElementById('console-tab');
+
+var clientIdentLabel = document.getElementById('client_ident');
+var connectStatusLabel = document.getElementById('connect_status');
 
 // All Application Logic Here
 var clientId;
 var socket = io();
+
+var isActive = false;
+
+// Disable all buttons first
+compileButton.disabled = true;
+stopButton.disabled = true;
+disableButton.disabled = true;
+autoButton.disabled = true;
+teleopButton.disabled = true;
 
 // Helper Functions
 function postOutputMessage(text, isError) {
@@ -25,7 +43,7 @@ function postOutputMessage(text, isError) {
 		newItem.classList.add('error');
 	}
 	// TODO Append Timestamp
-	newItem.innerText = text;
+	newItem.innerText = text.trim();
 
 	outputSection.appendChild(newItem);
 }
@@ -41,7 +59,7 @@ function postConsoleMessage(text, isError) {
 		newItem.classList.add('error');
 	}
 	// TODO Append Timestamp
-	newItem.innerText = text;
+	newItem.innerText = text.trim();
 
 	consoleSection.appendChild(newItem);
 }
@@ -53,6 +71,7 @@ function clearConsole() {
 // Hookup the socket events
 socket.on('registration', function (data) {
 	clientId = data;
+    clientIdentLabel.innerText = 'ClientID: ' + clientId;
 })
 
 socket.on('outputMessage', function (msgData) {
@@ -71,6 +90,54 @@ socket.on('consoleMessage', function (msgData) {
 	postConsoleMessage(msgData.message, msgData.isError);
 });
 
+socket.on('active', function () {
+    isActive = true;
+    compileButton.disabled = false;
+    connectStatusLabel.innerText = 'Connected';
+    connectStatusLabel.classList.add('connected');
+});
+
+socket.on('inactive', function (data) {
+    compileButton.disabled = true;
+    stopButton.disabled = true;
+    disableButton.disabled = true;
+    autoButton.disabled = true;
+    teleopButton.disabled = true;
+    connectStatusLabel.classList.remove('connected');
+    connectStatusLabel.innerText = '#' + data.position + ' in line';
+});
+
+socket.on('buildFailed', function () {
+    // re-enable the compile button
+    compileButton.disabled = false;
+    stopButton.disabled = true;
+});
+
+socket.on('compileComplete', function (data) {
+    compileButton.disabled = false;
+    stopButton.disabled = true;
+});
+
+socket.on('appStarted', function () {
+    stopButton.disabled = false;
+    disableButton.disabled = false;
+    autoButton.disabled = false;
+    teleopButton.disabled = false;
+    
+    // Switch over to the console tab
+    consoleTab.click();
+});
+
+socket.on('appStopped', function () {
+    stopButton.disabled = true; 
+    disableButton.disabled = true;
+    autoButton.disabled = true;
+    teleopButton.disabled = true;
+    
+    // Switch to output tab
+    outputTab.click();
+});
+
 Split(['#editor_section', '#sidebar'], {
     sizes: [65, 35],
     minSize: 300
@@ -84,6 +151,10 @@ var codeEditor = CodeMirror(layoutEditorSection, {
 	mode: 'text/x-java',
 	indentUnit: 4
 });
+
+if (FILE_TEMPLATES[0]) {
+    codeEditor.setValue(FILE_TEMPLATES[0].data);
+}
 
 function onResize() {
 	var height = layoutEditorSection.getBoundingClientRect().height;
@@ -99,11 +170,33 @@ onResize();
 // Button Event Handlers
 compileButton.addEventListener('click', function () {
 	clearOutput();
+    compileButton.disabled = true;
 	socket.emit('compile', codeEditor.getValue());
+});
+
+stopButton.addEventListener('click', function () {
+    stopButton.disabled = true;
+    modeLabel.innerText = 'Disabled';
+    socket.emit('stopApp');
 });
 
 clearOutputButton.addEventListener('click', clearOutput);
 
 clearConsoleButton.addEventListener('click', clearConsole);
+
+disableButton.addEventListener('click', function () {
+    socket.emit('mode', 'disabled');
+    modeLabel.innerText = 'Disabled';
+});
+
+autoButton.addEventListener('click', function () {
+    socket.emit('mode', 'auto');
+    modeLabel.innerText = 'Autonomous';
+});
+
+teleopButton.addEventListener('click', function () {
+    socket.emit('mode', 'teleop');
+    modeLabel.innerText = 'Teleop';
+});
 
 }, false);

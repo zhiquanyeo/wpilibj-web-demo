@@ -49,7 +49,7 @@ fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 var server = new NomadServer(6969);
 
 // Set up the UserManager
-var userManager = new UserManager();
+var userManager = new UserManager(server);
 
 server.on('digitalOutput', function (data) {
     console.log('DigitalOutput: ', data);
@@ -67,5 +67,5 @@ io.on('connection', function (socket) {
 });
 
 http.listen(3000, function () {
-	console.log('listening on *:3000');
+	console.log('WebApp server listening on *:3000');
 });

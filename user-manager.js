@@ -4,12 +4,13 @@ const EventEmitter = require('events');
 const AppManager = require('./app-manager.js');
 
 class UserManager extends EventEmitter {
-	constructor() {
+	constructor(nomadServer) {
 		super();
 		this.d_clientList = [];
 		this.d_clientMap = {};
 		this.d_activeClient = null;
 		this.d_appManager = new AppManager();
+        this.d_nomadServer = nomadServer;
 	}
 
 	get activeClient() {
@@ -39,10 +40,16 @@ class UserManager extends EventEmitter {
 
 			this.d_appManager.compileAndRun(src, clientId, socket);
 		}.bind(this));
+        
+        socket.on('stopApp', function () {
+            if (this.d_appManager.appRunning) {
+                this.d_appManager.stopApp();
+            }
+        }.bind(this));
 
 		// Set mode that the robot program will use
-		socket.on('mode', function (src) {
-			
+		socket.on('mode', function (mode) {
+			this.d_nomadServer.setRobotMode(mode);
 		}.bind(this));
 
 		// Relinquish position in queue and insert at the back
@@ -62,7 +69,14 @@ class UserManager extends EventEmitter {
 		}
 
 		delete this.d_clientMap[clientId];
-
+        
+        if (this.d_appManager.appRunning) {
+            this.d_appManager.stopApp();
+        }
+        
+        // Cleanup
+        this.d_appManager.cleanup(clientId);
+        
 		this.updateClientStatus();
 	}
 

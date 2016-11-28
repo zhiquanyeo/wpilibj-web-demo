@@ -5,6 +5,7 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 
 var WORKSPACE_DIR = __dirname + '/workspaces';
+var RESOURCES_DIR = __dirname + '/resources';
 
 class AppManager extends EventEmitter {
     constructor() {
@@ -16,9 +17,36 @@ class AppManager extends EventEmitter {
     get appRunning() {
         return this.d_appRunning;
     }
+    
+    /**
+     * Clean up workspace folders for unused clients
+     */
+    cleanup(clientId) {
+        var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId;
+        try {
+            if (fs.existsSync(clientWorkspaceDir)) {
+                // Delete all files in this
+                fs.readdirSync(clientWorkspaceDir).forEach(function (file, index) {
+                    var curPath = clientWorkspaceDir + '/' + file;
+                    fs.unlinkSync(curPath); 
+                });
+                
+                fs.rmdirSync(clientWorkspaceDir);
+            }
+        }
+        catch (err) {
+            setTimeout(function () {
+                this.cleanup(clientId);
+            }.bind(this), 1000);
+        }
+        // Otherwise, do nothing
+    }
 
     stopApp() {
-        // TODO Send SIGINT to this.d_app
+        if (this.d_app) {
+            this.d_app.kill();
+        }
+        this.d_appRunning = false;
     }
 
     compileAndRun(sourceCode, clientId, socket) {
@@ -33,10 +61,20 @@ class AppManager extends EventEmitter {
         var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId
         if (!fs.existsSync(clientWorkspaceDir)) {
             fs.mkdirSync(clientWorkspaceDir);
+            
+            // Also copy the jar file
+            try {
+                fs.linkSync(RESOURCES_DIR + '/nomad-wpilibj-lite.jar', 
+                            clientWorkspaceDir + '/nomad-wpilibj-lite.jar');
+            }
+            catch (err) {
+                console.error('Error copying JAR: ', err.toString());
+            }
         }
         fs.writeFileSync(clientWorkspaceDir + '/TestRobot.java', sourceCode);
 
-        var compileTask = spawn('javac', [clientWorkspaceDir + '/TestRobot.java'], {
+        var compileTask = spawn('javac', ['-classpath', 'nomad-wpilibj-lite.jar',  
+                                          clientWorkspaceDir + '/TestRobot.java'], {
             cwd: clientWorkspaceDir
         });
 
@@ -74,11 +112,17 @@ class AppManager extends EventEmitter {
                 });
 
                 // Now start running
-                this.d_app = spawn('java', ['-jar', 'nomad-wpilibj-lite.jar', 'RobotBase'], {
+                var cpString = './nomad-wpilibj-lite.jar;./*';
+                this.d_app = spawn('java', ['-cp', cpString, 
+                                            'edu.wpi.first.wpilibj.RobotBase',
+                                            '-m', 'direct',
+                                            '-h', 'tcp://localhost:6969',
+                                            'TestRobot'], {
                     cwd: clientWorkspaceDir
                 });
 
                 this.d_appRunning = true;
+                socket.emit('appStarted');
 
                 this.d_app.on('error', function (err) {
                     console.error('Failed to start app');
@@ -87,6 +131,7 @@ class AppManager extends EventEmitter {
                         isError: true
                     });
                     this.d_appRunning = false;
+                    socket.emit('appStopped');
                 }.bind(this));
 
                 this.d_app.on('close', function (data) {
@@ -110,7 +155,8 @@ class AppManager extends EventEmitter {
                             message: 'Application stopped',
                         });
                     }
-
+                    
+                    socket.emit('appStopped');
                     this.d_appRunning = false;
                 }.bind(this));
 
