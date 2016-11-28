@@ -22,6 +22,10 @@ class AppManager extends EventEmitter {
      * Clean up workspace folders for unused clients
      */
     cleanup(clientId) {
+        if (!clientId) {
+            return;
+        }
+        
         var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId;
         try {
             if (fs.existsSync(clientWorkspaceDir)) {
