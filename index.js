@@ -1,3 +1,4 @@
+(function() {
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -6,6 +7,7 @@ var fs = require('fs');
 var NomadServer = require('./nomad-direct-server.js');
 var UserManager = require('./user-manager.js');
 var spawn = require('child_process').spawn;
+var Robot = require('./robot.js');
 
 var WORKSPACE_DIR = __dirname + '/workspaces';
 var TEMPLATES_DIR = __dirname + '/resources/templates';
@@ -45,6 +47,9 @@ var templateString = 'var FILE_TEMPLATES = ' + JSON.stringify(templateFileData, 
 fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 
 // Now we should be ready to start
+// Initialize the robot hardware
+var robot = new Robot();
+
 // Start up the listening server
 var server = new NomadServer(6969);
 
@@ -69,3 +74,5 @@ io.on('connection', function (socket) {
 http.listen(3000, function () {
 	console.log('WebApp server listening on *:3000');
 });
+
+})();
