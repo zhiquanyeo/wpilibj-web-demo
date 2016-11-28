@@ -10,6 +10,9 @@ var outputSection = document.getElementById('output-scroll');
 var clearConsoleButton = document.getElementById('clear-console-btn');
 var consoleSection = document.getElementById('console-scroll');
 
+var outputTab = document.getElementById('output-tab');
+var consoleTab = document.getElementById('console-tab');
+
 // All Application Logic Here
 var clientId;
 var socket = io();
