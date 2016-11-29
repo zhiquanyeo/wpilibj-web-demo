@@ -1,8 +1,5 @@
 'use strict';
 
-var raspi = require('raspi');
-var PWM = require('raspi-pwm').PWM;
-
 var Gpio = require('pigpio').Gpio;
 
 // Explorer pHAT
@@ -29,10 +26,8 @@ class Motor {
      	
 	this.d_pwmForward = new Gpio(this.d_pinForward, {mode: Gpio.OUTPUT});
 	this.d_pwmBackward = new Gpio(this.d_pinBackward, {mode: Gpio.OUTPUT});   
-        this.d_pwmForward.pwmRange(1024);
+    this.d_pwmForward.pwmRange(1024);
 	this.d_pwmBackward.pwmRange(1024);   
-	// this.d_pwmForward = new PWM(this.d_pinForward);
-        // this.d_pwmBackward = new PWM(this.d_pinBackward);
     }
     
     get isInverted() {
@@ -110,22 +105,13 @@ class Motor {
 
 class ExplorerHat {
     constructor() {
-        this.d_ready = false;
         this.d_motors = [];
         
-        raspi.init(function () {
-            this.d_ready = true;
-            this.d_motors.push(new Motor(M1F, M1B));
-            this.d_motors.push(new Motor(M2F, M2B));
-        }.bind(this));
+        this.d_motors.push(new Motor(M1F, M1B));
+        this.d_motors.push(new Motor(M2F, M2B));
     }
     
     setMotorSpeed(channel, speed) {
-        if (!this.d_ready) {
-            // TODO Potentially queue this
-            return;
-        }
-        
         if (channel < 0 || channel >= this.d_motors.length) {
             return;
         }
@@ -133,11 +119,6 @@ class ExplorerHat {
     }
     
     setMotorInvert(channel, invert) {
-        if (!this.d_ready) {
-            // TODO Potentially queue this
-            return;
-        }
-        
         if (channel < 0 || channel >= this.d_motors.length) {
             return;
         }
