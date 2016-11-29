@@ -57,8 +57,13 @@ var server = new NomadServer(6969);
 var userManager = new UserManager(server);
 
 server.on('digitalOutput', function (data) {
-    console.log('DigitalOutput: ', data);
-})
+    robot.setDigital(data.channel, data.value);
+});
+
+server.on('pwmOutput', function (data) {
+    // Value is 0-255
+    robot.setPWM(data.channel, data.value);
+});
 
 app.use(express.static('public_html'));
 

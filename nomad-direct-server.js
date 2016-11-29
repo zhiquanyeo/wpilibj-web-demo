@@ -113,6 +113,7 @@ class NomadDirectServer extends EventEmitter {
                     }
                     channel = parseInt(messageParts[1], 10);
                     var pValue = parseFloat(messageParts[2]);
+                    // pValue => [0, 255]
                     this.emit('pwmOutput', {
                         channel: channel,
                         value: pValue
