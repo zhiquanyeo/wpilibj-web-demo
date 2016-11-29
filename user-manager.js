@@ -54,7 +54,17 @@ class UserManager extends EventEmitter {
 
 		// Relinquish position in queue and insert at the back
 		socket.on('relinquish', function () {
-			
+			// Verify that we are indeed the first one
+            if (this.d_clientList[0].id !== clientId) {
+                console.warn('Invalid relinquish command');
+                return;
+            }
+            
+            var temp = this.d_clientList[0];
+            this.d_clientList.splice(0 ,1);
+            this.d_clientList.push(temp);
+            
+            this.updateClientStatus();
 		}.bind(this));
 
 		this.updateClientStatus();

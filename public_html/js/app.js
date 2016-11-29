@@ -6,6 +6,7 @@ var outputSection = document.getElementById('side-output');
 var consoleSection = document.getElementById('side-console');
 var compileButton = document.getElementById('compile-button');
 var stopButton = document.getElementById('stop-button');
+var relinquishButton = document.getElementById('relinquish-position-button');
 var clearOutputButton = document.getElementById('clear-output-btn');
 var outputSection = document.getElementById('output-scroll');
 var clearConsoleButton = document.getElementById('clear-console-btn');
@@ -34,6 +35,7 @@ stopButton.disabled = true;
 disableButton.disabled = true;
 autoButton.disabled = true;
 teleopButton.disabled = true;
+relinquishButton.disabled = true;
 
 // Helper Functions
 function postOutputMessage(text, isError) {
@@ -93,6 +95,7 @@ socket.on('consoleMessage', function (msgData) {
 socket.on('active', function () {
     isActive = true;
     compileButton.disabled = false;
+    relinquishButton.disabled = false;
     connectStatusLabel.innerText = 'Connected';
     connectStatusLabel.classList.add('connected');
 });
@@ -103,6 +106,7 @@ socket.on('inactive', function (data) {
     disableButton.disabled = true;
     autoButton.disabled = true;
     teleopButton.disabled = true;
+    relinquishButton.disabled = true;
     connectStatusLabel.classList.remove('connected');
     connectStatusLabel.innerText = '#' + data.position + ' in line';
 });
@@ -178,6 +182,10 @@ stopButton.addEventListener('click', function () {
     stopButton.disabled = true;
     modeLabel.innerText = 'Disabled';
     socket.emit('stopApp');
+});
+
+relinquishButton.addEventListener('click', function () {
+    socket.emit('relinquish'); 
 });
 
 clearOutputButton.addEventListener('click', clearOutput);
