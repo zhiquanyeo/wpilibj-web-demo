@@ -56,6 +56,9 @@ var server = new NomadServer(6969);
 // Set up the UserManager
 var userManager = new UserManager(server);
 
+// Robot "I/O"
+// events from 'server' represent commands from the robot program
+// events from 'robot' represent data/sensor readings from the physical robot
 server.on('digitalOutput', function (data) {
     robot.setDigital(data.channel, data.value);
 });
