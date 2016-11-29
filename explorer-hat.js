@@ -12,10 +12,10 @@ var LED4 = 5;
 
 // TODO - Pins for Input and Output
 
-var M1B = 19;
-var M1F = 20;
-var M2B = 21;
-var M2F = 26;
+var M1B = 24; // BCM 19
+var M1F = 28; // BCM 20
+var M2B = 29; // BCM 21
+var M2F = 25; // BCM 26
 
 class Motor {
     constructor(pinF, pinB) {
