@@ -3,6 +3,8 @@
 var raspi = require('raspi');
 var PWM = require('raspi-pwm').PWM;
 
+var Gpio = require('pigpio').Gpio;
+
 // Explorer pHAT
 
 var LED1 = 4;
@@ -12,10 +14,10 @@ var LED4 = 5;
 
 // TODO - Pins for Input and Output
 
-var M1B = 24; // BCM 19
-var M1F = 28; // BCM 20
-var M2B = 29; // BCM 21
-var M2F = 25; // BCM 26
+var M1B = 19; // BCM 19
+var M1F = 20; // BCM 20
+var M2B = 21; // BCM 21
+var M2F = 26; // BCM 26
 
 class Motor {
     constructor(pinF, pinB) {
@@ -24,9 +26,13 @@ class Motor {
         this.d_pinForward = pinF;
         this.d_pinBackward = pinB;
         this.d_speed = 0;
-        
-        this.d_pwmForward = new PWM(this.d_pinForward);
-        this.d_pwmBackward = new PWM(this.d_pinBackward);
+     	
+	this.d_pwmForward = new Gpio(this.d_pinForward, {mode: Gpio.OUTPUT});
+	this.d_pwmBackward = new Gpio(this.d_pinBackward, {mode: Gpio.OUTPUT});   
+        this.d_pwmForward.pwmRange(1024);
+	this.d_pwmBackward.pwmRange(1024);   
+	// this.d_pwmForward = new PWM(this.d_pinForward);
+        // this.d_pwmBackward = new PWM(this.d_pinBackward);
     }
     
     get isInverted() {
@@ -82,16 +88,16 @@ class Motor {
         
         var writeVal = Math.round(Math.abs(speed) / 100.0 * 1024);
         if (speed > 0) {
-            this.d_pwmBackward.write(0);
-            this.d_pwmForward.write(writeVal);
+            this.d_pwmBackward.pwmWrite(0);
+            this.d_pwmForward.pwmWrite(writeVal);
         }
         else if (speed < 0) {
-            this.d_pwmBackward.write(writeVal);
-            this.d_pwmForward.write(0);
+            this.d_pwmBackward.pwmWrite(writeVal);
+            this.d_pwmForward.pwmWrite(0);
         }
         else {
-            this.d_pwmBackward.write(0);
-            this.d_pwmForward.write(0);
+            this.d_pwmBackward.pwmWrite(0);
+            this.d_pwmForward.pwmWrite(0);
         }
         
         return speed;
