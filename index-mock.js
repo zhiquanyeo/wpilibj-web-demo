@@ -3,8 +3,7 @@
 
 const mockery = require('mockery');
 
-mockery.registerSubstitute('raspi', './mocks/raspi');
-mockery.registerSubstitute('raspi-pwm', './mocks/raspi-pwm');
+mockery.registerSubstitute('pigpio', './mocks/pigpio');
 mockery.enable({
     warnOnUnregistered: false
 });
