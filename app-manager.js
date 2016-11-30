@@ -116,7 +116,14 @@ class AppManager extends EventEmitter {
                 });
 
                 // Now start running
-                var cpString = './nomad-wpilibj-lite.jar;./*';
+                var cpString;
+                if (process.platform === 'win32') {
+                    cpString = './nomad-wpilibj-lite.jar;./*';
+                }
+                else {
+                    cpString = './nomad-wpilibj-lite.jar:./*';
+                }
+
                 this.d_app = spawn('java', ['-cp', cpString, 
                                             'edu.wpi.first.wpilibj.RobotBase',
                                             '-m', 'direct',
