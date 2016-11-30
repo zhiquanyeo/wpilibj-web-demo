@@ -105,6 +105,12 @@ body {
 	width: 25%;
 }
 
+#side-reference {
+  padding: 5px;
+  font-size: 10pt;
+  overflow-y: scroll;
+}
+
 #clear-output-btn {
 	position: absolute;
 	top: 5px;
@@ -161,4 +167,9 @@ body {
 .connection-status.connected {
     background: #18ce08;
     color: #ffffff;
+}
+
+.api-doc-function {
+    font-family: Courier, monospace;
+    font-weight: bold;
 }
