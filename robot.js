@@ -10,6 +10,12 @@ class Robot extends EventEmitter {
         // TODO Also hook into the digital input pins from the 
         // ExplorerHAT
     }
+
+    disable() {
+        // Basically make sure that both motors are off
+        ExplorerHAT.setMotorSpeed(0, 0);
+        ExplorerHAT.setMotorSpeed(1, 0);
+    }
     
     setPWM(channel, val) {
         // Input value is 0-255, need to convert to -100 to 100

@@ -68,6 +68,10 @@ server.on('pwmOutput', function (data) {
     robot.setPWM(data.channel, data.value);
 });
 
+server.on('disableRobot', function () {
+	robot.disable();
+})
+
 app.use(express.static('public_html'));
 
 app.get('/', function (req, res) {

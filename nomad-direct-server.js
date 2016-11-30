@@ -33,8 +33,7 @@ class NomadDirectServer extends EventEmitter {
             socket.on('error', function (err) {
                 console.log('socket error: ', err);
                 this.d_clients.splice(this.d_clients.indexOf(socket), 1);
-                
-                // TODO: Also kill the robot outputs
+                this.emit('disableRobot');
             }.bind(this));
         }.bind(this));
 
