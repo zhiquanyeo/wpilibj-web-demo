@@ -173,3 +173,15 @@ body {
     font-family: Courier, monospace;
     font-weight: bold;
 }
+
+#loading-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 15px;
+    visibility: hidden;
+}
+
+#loading-icon.visible {
+    visibility: visible;
+}

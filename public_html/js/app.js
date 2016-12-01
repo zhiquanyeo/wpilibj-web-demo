@@ -23,6 +23,8 @@ var consoleTab = document.getElementById('console-tab');
 var clientIdentLabel = document.getElementById('client_ident');
 var connectStatusLabel = document.getElementById('connect_status');
 
+var loadingImage = document.getElementById('loading-icon');
+
 // All Application Logic Here
 var clientId;
 var socket = io();
@@ -91,6 +93,14 @@ socket.on('consoleMessage', function (msgData) {
 
 	postConsoleMessage(msgData.message, msgData.isError);
 });
+
+socket.on('compileStarted', function () {
+    loadingImage.classList.add('visible'); 
+});
+
+socket.on('compileComplete', function () {
+    loadingImage.classList.remove('visible');
+})
 
 socket.on('active', function () {
     isActive = true;

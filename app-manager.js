@@ -76,7 +76,9 @@ class AppManager extends EventEmitter {
             }
         }
         fs.writeFileSync(clientWorkspaceDir + '/TestRobot.java', sourceCode);
-
+        
+        socket.emit('compileStarted');
+        
         var compileTask = spawn('javac', ['-classpath', 'nomad-wpilibj-lite.jar',  
                                           clientWorkspaceDir + '/TestRobot.java'], {
             cwd: clientWorkspaceDir
@@ -88,7 +90,10 @@ class AppManager extends EventEmitter {
                 message: err.toString(),
                 isError: true
             });
-
+            
+            socket.emit('compileComplete', {
+                success: false
+            });
             socket.emit('buildFailed');
         });
 
