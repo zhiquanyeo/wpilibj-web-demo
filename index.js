@@ -69,6 +69,7 @@ server.on('pwmOutput', function (data) {
 });
 
 server.on('disableRobot', function () {
+	console.log('Robot Disabled');
 	robot.disable();
 })
 
