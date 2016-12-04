@@ -32,6 +32,7 @@ class UserManager extends EventEmitter {
 			this.unregisterUser(clientId);
 		}.bind(this));
 
+
 		// This should probably just handle all the necessary events without the main app knowing
 		socket.on('compile', function (src) {
 			if (this.d_appManager.appRunning) {
@@ -80,6 +81,7 @@ class UserManager extends EventEmitter {
 
 		delete this.d_clientMap[clientId];
         
+        // This should be done in updateClientStatus is there is a change in active user
         if (this.d_appManager.appRunning) {
             this.d_appManager.stopApp();
         }

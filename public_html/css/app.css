@@ -169,6 +169,11 @@ body {
     color: #ffffff;
 }
 
+.connection-status.disconnected {
+    background: #ff0000;
+    color: #ffffff;
+}
+
 .api-doc-function {
     font-family: Courier, monospace;
     font-weight: bold;

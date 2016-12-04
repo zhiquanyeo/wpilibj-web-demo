@@ -74,7 +74,7 @@ function clearConsole() {
 
 // Hookup the socket events
 socket.on('registration', function (data) {
-	clientId = data;
+    clientId = data;
     clientIdentLabel.innerText = 'ClientID: ' + clientId;
 })
 
@@ -108,6 +108,7 @@ socket.on('active', function () {
     relinquishButton.disabled = false;
     connectStatusLabel.innerText = 'Connected';
     connectStatusLabel.classList.add('connected');
+    connectStatusLabel.classList.remove('disconnected');
 });
 
 socket.on('inactive', function (data) {
@@ -118,6 +119,7 @@ socket.on('inactive', function (data) {
     teleopButton.disabled = true;
     relinquishButton.disabled = true;
     connectStatusLabel.classList.remove('connected');
+    connectStatusLabel.classList.remove('disconnected');
     connectStatusLabel.innerText = '#' + data.position + ' in line';
 });
 
@@ -150,6 +152,20 @@ socket.on('appStopped', function () {
     
     // Switch to output tab
     outputTab.click();
+});
+
+socket.on('disconnect', function () {
+    console.log('Local client socket got disconnect event');
+    // TODO disable everything and wait
+    compileButton.disabled = true;
+    stopButton.disabled = true;
+    disableButton.disabled = true;
+    autoButton.disabled = true;
+    teleopButton.disabled = true;
+    relinquishButton.disabled = true;
+    connectStatusLabel.classList.remove('connected');
+    connectStatusLabel.classList.add('disconnected');
+    connectStatusLabel.innerText = 'No Connection To Server';
 });
 
 Split(['#editor_section', '#sidebar'], {
