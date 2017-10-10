@@ -25,6 +25,8 @@ var connectStatusLabel = document.getElementById('connect_status');
 
 var loadingImage = document.getElementById('loading-icon');
 
+var referenceSection = document.getElementById('side-reference-2');
+
 // All Application Logic Here
 var clientId;
 var socket = io();
@@ -76,7 +78,11 @@ function clearConsole() {
 socket.on('registration', function (data) {
     clientId = data;
     clientIdentLabel.innerText = 'ClientID: ' + clientId;
-})
+});
+
+socket.on('referenceData', function (data) {
+    //referenceSection.innerHTML = data.refDoc;
+});
 
 socket.on('outputMessage', function (msgData) {
 	if (!msgData || !msgData.message) {

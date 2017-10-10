@@ -1,6 +1,6 @@
 var FILE_TEMPLATES = [
     {
         "filename": "TestRobot.java",
-        "data": "import edu.wpi.first.wpilibj.SampleRobot;\r\n\r\npublic class TestRobot extends SampleRobot {\r\n\r\n    protected void robotInit() {\r\n\r\n    }\r\n\r\n    protected void autonomous() {\r\n\r\n    }\r\n\r\n    protected void operatorControl() {\r\n\r\n    }\r\n\r\n    protected void test() {\r\n\r\n    }\r\n\r\n    protected void disabled() {\r\n        \r\n    }\r\n}"
+        "data": "import edu.wpi.first.wpilibj.*;\n\npublic class TestRobot extends SampleRobot {\n\n    // This declares a new RobotDrive that uses PWM outputs 0 and 1\n    // The RobotDrive is used to control the motors on the robot.\n    private RobotDrive drivetrain = new RobotDrive(0, 1);\n\n    // This function gets called once when the robot wakes up\n    protected void robotInit() {\n        // Here, we print a welcome message\n        System.out.println(\"Hello! I am TestRobot\");\n    }\n\n    // TThe code in this function gets run when the robot enters autonomous mode\n    protected void autonomous() {\n\n    }\n\n    // The code in this function gets run when the robot enters teleop mode\n    protected void operatorControl() {\n\n    }\n\n    // The code in this function gets run when the robot is disabled\n    protected void disabled() {\n        // In this case, we print a message\n        System.out.println(\"Aww... I've been disabled\");\n    }\n}"
     }
 ]

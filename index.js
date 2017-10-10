@@ -4,15 +4,23 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+var markdown = require('markdown').markdown;
+
 var NomadServer = require('./nomad-direct-server.js');
 var UserManager = require('./user-manager.js');
 var spawn = require('child_process').spawn;
 var Robot = require('./robot.js');
 
+
 var WORKSPACE_DIR = __dirname + '/workspaces';
 var TEMPLATES_DIR = __dirname + '/resources/templates';
 var PUBLIC_HTML_DIR = __dirname + '/public_html';
 var PUBLIC_JS_DIR = PUBLIC_HTML_DIR + '/js';
+
+// Templates, documentation, etc
+var REFERENCE_DIR = __dirname + '/resources/reference';
+var refDoc = fs.readFileSync(REFERENCE_DIR + '/reference.md', { encoding: 'utf-8' });
+var refDocHTML = markdown.toHTML(refDoc);
 
 // === Utility Functions ===
 function generateUUID() {
@@ -82,6 +90,10 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
 	var clientId = generateUUID();
 	userManager.registerUser(clientId, socket);
+
+	socket.emit('referenceData', {
+		refDoc: refDocHTML
+	});
 });
 
 http.listen(3000, function () {
