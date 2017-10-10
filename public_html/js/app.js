@@ -25,7 +25,7 @@ var connectStatusLabel = document.getElementById('connect_status');
 
 var loadingImage = document.getElementById('loading-icon');
 
-var referenceSection = document.getElementById('side-reference-2');
+var referenceSection = document.getElementById('side-reference');
 
 // All Application Logic Here
 var clientId;
@@ -81,7 +81,7 @@ socket.on('registration', function (data) {
 });
 
 socket.on('referenceData', function (data) {
-    //referenceSection.innerHTML = data.refDoc;
+    referenceSection.innerHTML = data.refDoc;
 });
 
 socket.on('outputMessage', function (msgData) {

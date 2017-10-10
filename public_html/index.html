@@ -38,9 +38,9 @@
 	        	<div id="sidebar" class="tabs">
 	        		<nav class="tabs__navigation">
 		        		<a class="tabs__link tabs__link--active" href="#side-output" id="output-tab">Output</a>
-		        		<a class="tabs__link" href="#side-console" id="console-tab">Robot Console</a>
+		        		<a class="tabs__link" href="#side-console" id="console-tab">Console</a>
 						<a class="tabs__link" href="#side-reference" id="reference-tab">Reference</a>
-						<a class="tabs__link" href="#side-snippets" id="snippets-tab">Code Snippets</a>
+						<a class="tabs__link" href="#side-snippets" id="snippets-tab">Snippets</a>
 	        		</nav>
 	        		<div class="tabs__section" id="side-output">
 	        			<button id="clear-output-btn">Clear</button>
@@ -53,34 +53,8 @@
 	        			
 	        			<div id="console-scroll"></div>
 					</div>
-					<div class="tabs__section" id="side-reference-2">
-
-					</div>
 	        		<div class="tabs__section" id="side-reference">
-	        			<p>This section lists some useful commands and code for use in controlling your robot</p>
-	        			<h3>Robot State</h3>
-	        			<p>The following functions can be performed on the TestRobot object (referred to in code as <i>this</i>):</p>
-	        			<p><span class="api-doc-function"><i>boolean</i> isEnabled()</span><br />
-	        			Returns true if the robot is currently enabled (that is, not disabled)</p>
-	        			<p><span class="api-doc-function"><i>boolean</i> isAutonomous()</span><br />
-	        			Returns true if the robot is currently in autonomous mode</p>
-	        			<p><span class="api-doc-function"><i>boolean</i> isOperatorControl()</span><br />
-	        			Returns true if the robot is currently in teleop mode</p>
-
-	        			<p>&nbsp;</p>
-	        			<h3>Driving</h3>
-	        			<p>The following functions can be performed on a RobotDrive object:</p>
-	        			<p><span class="api-doc-function">tankDrive(<i>double leftSpeed</i>, <i>double rightSpeed</i>, <i>boolean squared</i>)</span><br />
-	        			This function allows you to control each motor independently. Allowable values for <i>leftSpeed</i> and <i>rightSpeed</i> are in the range of -1.0 to 1.0. The <i>squared</i> parameter is optional, and if not provided, defaults to true. If <i>squared</i> is set to true, the sensitivity is decreased at lower speeds (really only useful if using a joystick).</p>
-
-	        			<p><span class="api-doc-function">arcadeDrive(<i>double moveVal</i>, <i>double turnVal</i>, <i>boolean squared</i>)</span><br />
-	        			This function allows you to control the robot in terms of forward/reverse speed and turning speed. Allowable values for <i>moveVal</i> and <i>turnVal</i> are in the range of -1.0 to 1.0. The <i>squared</i> parameter is optional, and if not provided, defaults to true. If <i>squared</i> is set to true, the sensitivity is decreased at lower speeds (really only useful if using a joystick).</p>
-
-	        			<p>&nbsp;</p>
-	        			<h3>Utility Functions</h3>
-	        			<p>The following are general functions that might be of use:</p>
-	        			<p><span class="api-doc-function">Timer.delay(<i>double seconds</i>)</span><br />
-	        			This functions sleeps/blocks for the given number of seconds before continuing execution. Motors and outputs continue to run though! Useful for asking the robot to drive for a certain amount of time before stopping.</p>
+	        			
 					</div>
 					<div class="tabs__section" id="side-snippets">
 						Snippets

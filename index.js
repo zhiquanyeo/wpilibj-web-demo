@@ -4,13 +4,16 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
-var markdown = require('markdown').markdown;
+var marked = require('marked');
+var Moniker = require('moniker');
 
 var NomadServer = require('./nomad-direct-server.js');
 var UserManager = require('./user-manager.js');
-var spawn = require('child_process').spawn;
 var Robot = require('./robot.js');
 
+marked.setOptions({
+	breaks: true
+});
 
 var WORKSPACE_DIR = __dirname + '/workspaces';
 var TEMPLATES_DIR = __dirname + '/resources/templates';
@@ -20,18 +23,7 @@ var PUBLIC_JS_DIR = PUBLIC_HTML_DIR + '/js';
 // Templates, documentation, etc
 var REFERENCE_DIR = __dirname + '/resources/reference';
 var refDoc = fs.readFileSync(REFERENCE_DIR + '/reference.md', { encoding: 'utf-8' });
-var refDocHTML = markdown.toHTML(refDoc);
-
-// === Utility Functions ===
-function generateUUID() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-};
+var refDocHTML = marked(refDoc);
 
 var clientList = [];
 var clientMap = {};
@@ -88,7 +80,7 @@ app.get('/', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-	var clientId = generateUUID();
+	var clientId = Moniker.choose();
 	userManager.registerUser(clientId, socket);
 
 	socket.emit('referenceData', {
