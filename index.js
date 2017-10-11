@@ -22,8 +22,14 @@ var PUBLIC_JS_DIR = PUBLIC_HTML_DIR + '/js';
 
 // Templates, documentation, etc
 var REFERENCE_DIR = __dirname + '/resources/reference';
+var SNIPPETS_DIR = __dirname + '/resources/snippets';
+
 var refDoc = fs.readFileSync(REFERENCE_DIR + '/reference.md', { encoding: 'utf-8' });
 var refDocHTML = marked(refDoc);
+
+var snippetFiles = fs.readdirSync(SNIPPETS_DIR);
+var snippetFileData = [];
+
 
 var clientList = [];
 var clientMap = {};
