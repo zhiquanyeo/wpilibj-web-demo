@@ -9,13 +9,20 @@ var Moniker = require('moniker');
 
 var NomadServer = require('./nomad-direct-server.js');
 var UserManager = require('./user-manager.js');
-var Robot = require('./robot.js');
+
+const RobotConfigManager = require('./configurations/robot-config');
+
+const { Constants, Robot } = require('@ftl-robots/ftl-robot-host');
+const Path = require('path');
+const OS = require('os');
+const commandLineArgs = require('command-line-args');
 
 marked.setOptions({
 	breaks: true
 });
 
-var WORKSPACE_DIR = __dirname + '/workspaces';
+const DEFAULT_WORKSPACE_DIR = OS.tmpdir() + Path.sep + '/ftl-workspaces';
+
 var TEMPLATES_DIR = __dirname + '/resources/templates';
 var PUBLIC_HTML_DIR = __dirname + '/public_html';
 var PUBLIC_JS_DIR = PUBLIC_HTML_DIR + '/js';
@@ -31,12 +38,24 @@ var snippetFiles = fs.readdirSync(SNIPPETS_DIR);
 var snippetFileData = [];
 
 
+// Set up command line args
+const optionDefs = [
+	{ name: 'config', alias: 'c', type: String},
+	{ name: 'workspace', alias: 'w', type: String }
+];
+
+const opts = commandLineArgs(optionDefs, { partial: true });
+
+const cfgConfig = opts.config !== undefined ? opts.config : 'normal';
+const cfgWorkspaceDir = opts.workspace !== undefined ? opts.workspace : DEFAULT_WORKSPACE_DIR;
+
 var clientList = [];
 var clientMap = {};
 
 // Initialize workspaces
-if (!fs.existsSync(WORKSPACE_DIR)) {
-	fs.mkdirSync(WORKSPACE_DIR);
+if (!fs.existsSync(cfgWorkspaceDir)) {
+	console.log('Creating workspace directory');
+	fs.mkdirSync(cfgWorkspaceDir);
 }
 
 // Generate the templates file if we need to
@@ -54,7 +73,8 @@ fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 
 // Now we should be ready to start
 // Initialize the robot hardware
-var robot = new Robot();
+var robotConfig = RobotConfigManager.getConfig(cfgConfig);
+var robot = new Robot(robotConfig);
 
 // Start up the listening server
 var server = new NomadServer(6969);
@@ -66,12 +86,12 @@ var userManager = new UserManager(server);
 // events from 'server' represent commands from the robot program
 // events from 'robot' represent data/sensor readings from the physical robot
 server.on('digitalOutput', function (data) {
-    robot.setDigital(data.channel, data.value);
+	robot.writeDigital(data.channel, data.value);
 });
 
 server.on('pwmOutput', function (data) {
-    // Value is 0-255
-    robot.setPWM(data.channel, data.value);
+	// Value is 0-255
+	robot.writePWM(data.channel, data.value);
 });
 
 server.on('disableRobot', function () {

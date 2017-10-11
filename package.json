@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zhiquanyeo/wpilibj-web-demo#readme",
   "dependencies": {
+    "@ftl-robots/ftl-mocks": "^1.0.0",
     "@ftl-robots/ftl-pololu-devices": "^1.0.0",
     "@ftl-robots/ftl-robot-host": "^1.0.3",
     "command-line-args": "^4.0.7",

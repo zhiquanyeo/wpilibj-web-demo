@@ -4,12 +4,12 @@ const EventEmitter = require('events');
 var fs = require('fs');
 var spawn = require('child_process').spawn;
 
-var WORKSPACE_DIR = __dirname + '/workspaces';
 var RESOURCES_DIR = __dirname + '/resources';
 
 class AppManager extends EventEmitter {
-    constructor() {
+    constructor(workspaceDir) {
         super();
+        this.d_workspaceDir = workspaceDir
         this.d_appRunning = false;
         this.d_app = null;
     }
@@ -26,7 +26,7 @@ class AppManager extends EventEmitter {
             return;
         }
         
-        var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId;
+        var clientWorkspaceDir = this.d_workspaceDir + '/' + clientId;
         try {
             if (fs.existsSync(clientWorkspaceDir)) {
                 // Delete all files in this
@@ -62,7 +62,7 @@ class AppManager extends EventEmitter {
             return;
         }
 
-        var clientWorkspaceDir = WORKSPACE_DIR + '/' + clientId
+        var clientWorkspaceDir = this.d_workspaceDir + '/' + clientId
         if (!fs.existsSync(clientWorkspaceDir)) {
             fs.mkdirSync(clientWorkspaceDir);
             

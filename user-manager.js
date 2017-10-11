@@ -4,12 +4,13 @@ const EventEmitter = require('events');
 const AppManager = require('./app-manager.js');
 
 class UserManager extends EventEmitter {
-	constructor(nomadServer) {
+	constructor(nomadServer, workspaceDir) {
 		super();
 		this.d_clientList = [];
 		this.d_clientMap = {};
 		this.d_activeClient = null;
-		this.d_appManager = new AppManager();
+		this.d_workspaceDir = workspaceDir;
+		this.d_appManager = new AppManager(workspaceDir);
         this.d_nomadServer = nomadServer;
 	}
 
