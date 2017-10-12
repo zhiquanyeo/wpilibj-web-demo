@@ -74,6 +74,41 @@ function clearConsole() {
 	consoleSection.innerHTML = '';
 }
 
+// Snippet methods
+var snippets = [];
+var snippetSelector = document.getElementById('snippet-select');
+var snippetArea = document.getElementById('snippet-area');
+
+snippetSelector.addEventListener('change', function () {
+    var idx = snippetSelector.selectedIndex;
+    showSnippet(idx);
+})
+
+function showSnippet(idx) {
+    if (snippets[idx]) {
+        snippetArea.innerHTML = snippets[idx].data;
+    }
+}
+
+function updateSnippets() {
+    while(snippetSelector.firstChild) {
+        snippetSelector.removeChild(snippetSelector.firstChild);
+    }
+    snippetArea.innerHTML = '';
+
+    for (var i = 0; i < snippets.length; i++) {
+        snippetSelector.options[i] = 
+            new Option(snippets[i].name, snippets[i].name);
+    }
+
+    if (snippets.length > 0) {
+        showSnippet(0);
+    }
+    else {
+        snippetArea.innerHTML = '';
+    }
+}
+
 // Hookup the socket events
 socket.on('registration', function (data) {
     clientId = data;
@@ -81,7 +116,11 @@ socket.on('registration', function (data) {
 });
 
 socket.on('referenceData', function (data) {
-    referenceSection.innerHTML = data.refDoc;
+    referenceSection.innerHTML = data.referenceDoc;
+
+    // Generate the snippets
+    snippets = data.snippets;
+    updateSnippets();
 });
 
 socket.on('outputMessage', function (msgData) {

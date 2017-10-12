@@ -31,13 +31,6 @@ var PUBLIC_JS_DIR = PUBLIC_HTML_DIR + '/js';
 var REFERENCE_DIR = __dirname + '/resources/reference';
 var SNIPPETS_DIR = __dirname + '/resources/snippets';
 
-var refDoc = fs.readFileSync(REFERENCE_DIR + '/reference.md', { encoding: 'utf-8' });
-var refDocHTML = marked(refDoc);
-
-var snippetFiles = fs.readdirSync(SNIPPETS_DIR);
-var snippetFileData = [];
-
-
 // Set up command line args
 const optionDefs = [
 	{ name: 'config', alias: 'c', type: String},
@@ -57,8 +50,25 @@ if (!fs.existsSync(cfgWorkspaceDir)) {
 	console.log('Creating workspace directory');
 	fs.mkdirSync(cfgWorkspaceDir);
 }
+console.log('Using workspace directory: ', cfgWorkspaceDir);
 
-// Generate the templates file if we need to
+// === GENERATE DOCUMENTATION ===
+// reference docs
+var refDoc = fs.readFileSync(REFERENCE_DIR + '/reference.md', { encoding: 'utf-8' });
+var refDocHTML = marked(refDoc);
+
+// snippets
+var snippetFiles = fs.readdirSync(SNIPPETS_DIR);
+var snippetFileData = [];
+for (var i = 0; i < snippetFiles.length; i++) {
+	var snippetContents = fs.readFileSync(SNIPPETS_DIR + Path.sep + snippetFiles[i], { encoding: 'utf-8' });
+	snippetFileData.push({
+		name: snippetFiles[i],
+		data: marked(snippetContents)
+	});
+}
+
+// templates
 var templateFiles = fs.readdirSync(TEMPLATES_DIR);
 var templateFileData = [];
 for (var i = 0; i < templateFiles.length; i++) {
@@ -68,6 +78,15 @@ for (var i = 0; i < templateFiles.length; i++) {
 		data: fileContents
 	});
 }
+
+var REFERENCE_DATA = {
+	referenceDoc: refDocHTML,
+	snippets: snippetFileData,
+	templates: templateFileData
+};
+
+// === END DOCUMENTATION GENERATION ===
+
 var templateString = 'var FILE_TEMPLATES = ' + JSON.stringify(templateFileData, null, 4);
 fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 
@@ -109,9 +128,8 @@ io.on('connection', function (socket) {
 	var clientId = Moniker.choose();
 	userManager.registerUser(clientId, socket);
 
-	socket.emit('referenceData', {
-		refDoc: refDocHTML
-	});
+	// Send out the reference data packet
+	socket.emit('referenceData', REFERENCE_DATA);
 });
 
 http.listen(3000, function () {
