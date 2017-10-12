@@ -190,3 +190,19 @@ body {
 #loading-icon.visible {
     visibility: visible;
 }
+
+#snippets-section {
+	position: absolute;
+	top: 25px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+#snippet-area {
+  margin-top: 15px;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
