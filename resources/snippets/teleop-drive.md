@@ -15,8 +15,8 @@ Copy the code in the Snippet section into your TestRobot class, then see the Exa
 protected void teleopDrive(Joystick gamepad) {
     // We grab the values from the joystick axes and use them as inputs
     // to the arcadeDrive method
-    double moveVal = gamepad.getRawAxis(0);
-    double turnVal = gamepad.getRawAxis(2);
+    double moveVal = gamepad.getRawAxis(1); // Left stick, y-axis
+    double turnVal = gamepad.getRawAxis(2); // right stick, x-axis
 
     drivetrain.arcadeDrive(moveVal, turnVal);
 }

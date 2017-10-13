@@ -1,7 +1,6 @@
-'use strict';
-
 const EventEmitter = require('events');
 const AppManager = require('./app-manager.js');
+const dgram = require('dgram');
 
 class UserManager extends EventEmitter {
 	constructor(nomadServer, workspaceDir) {
@@ -11,7 +10,9 @@ class UserManager extends EventEmitter {
 		this.d_activeClient = null;
 		this.d_workspaceDir = workspaceDir;
 		this.d_appManager = new AppManager(workspaceDir);
-        this.d_nomadServer = nomadServer;
+		this.d_nomadServer = nomadServer;
+		
+		this.d_joystickClient = dgram.createSocket('udp4');
 	}
 
 	get activeClient() {
@@ -68,6 +69,48 @@ class UserManager extends EventEmitter {
             
             this.updateClientStatus();
 		}.bind(this));
+
+		socket.on('joystick', function(data) {
+			if (this.d_clientList && this.d_clientList[0].id === clientId) {
+				// TODO Send joystick data
+				// [ 0xDE ][ 0xAD ][axisCount][axis data]...[buttonCount][ 3 bytes of button]
+				var numAxes = data.axes.length;
+				var numButtons = data.buttons.length;
+				var bufferSize = 7 + (4 * numAxes); // 32 bit float
+				var buf = Buffer.alloc(bufferSize);
+				buf.writeUInt8(0xDE, 0);
+				buf.writeUInt8(0xAD, 1);
+				buf.writeUInt8(numAxes, 2);
+				for (var i = 0; i < numAxes; i++) {
+					var offset = (i * 4) + 3;
+					buf.writeFloatBE(data.axes[i], offset);
+				}
+				var btnCountOffset = bufferSize - 4;
+				// build up the ints
+				var temp = 0;
+				for (var i = 0; i < numButtons; i++) {
+					temp |= (data.buttons[i] ? 1 : 0);
+					if (i < numButtons - 1) {
+						temp << 1;
+					}
+				}
+				for (var i = 0; i < (24 - numButtons - 1); i++) {
+					temp << 1;
+				}
+				var btnByte1 = (temp >> 16) & 0xFF;
+				var btnByte2 = (temp >> 8) & 0xFF;
+				var btnByte3 = (temp & 0xFF);
+				buf.writeUInt8(btnCountOffset, btnByte1);
+				buf.writeUInt8(btnCountOffset + 1, btnByte2);
+				buf.writeUInt8(btnCountOffset + 2, btnByte3);
+
+				this.d_joystickClient.send(buf, 1120, '127.0.0.1', (err) => {
+					if (err) {
+						console.error(err);
+					}
+				});
+			}
+		}.bind(this))
 
 		this.updateClientStatus();
 	}

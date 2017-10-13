@@ -22,6 +22,7 @@ var consoleTab = document.getElementById('console-tab');
 
 var clientIdentLabel = document.getElementById('client_ident');
 var connectStatusLabel = document.getElementById('connect_status');
+var gamepadStatusLabel = document.getElementById('gamepad_status');
 
 var loadingImage = document.getElementById('loading-icon');
 
@@ -32,6 +33,111 @@ var clientId;
 var socket = io();
 
 var isActive = false;
+
+var templateLoaded = false;
+
+// ==== GAMEPAD METHODS ====
+var gamepadConnected = false;
+function setGamepadConnected(connected) {
+    gamepadConnected = connected;
+    
+    if (!connected) {
+        gamepadStatusLabel.innerHTML = "Gamepad Disconnected";
+        gamepadStatusLabel.classList.remove('connected');
+        gamepadStatusLabel.classList.add('disconnected');
+    }
+    else {
+        gamepadStatusLabel.innerHTML = "Gamepad Connected";
+        gamepadStatusLabel.classList.remove('disconnected');
+        gamepadStatusLabel.classList.add('connected');
+    }
+}
+
+// Initial State
+setGamepadConnected(false);
+
+var gamepads = {};
+
+function _gamepadPoll() {
+    if (navigator.getGamepads()[0]) {
+        setGamepadConnected(true);
+        clearInterval(gamepadPollInterval);
+        _gamepadLoop();
+    }
+    else {
+        setGamepadConnected(false);
+    }
+}
+
+var gamepadPollInterval = setInterval(_gamepadPoll, 500);
+
+function gamepadHandler(event, connecting) {
+    var gamepad = event.gamepad;
+    // Note:
+    // gamepad === navigator.getGamepads()[gamepad.index]
+
+    if (connecting) {
+        gamepads[gamepad.index] = gamepad;
+        setGamepadConnected(true);
+        clearInterval(gamepadPollInterval);
+
+    } else {
+        delete gamepads[gamepad.index];
+        if (Object.keys(gamepads).length === 0) {
+            setGamepadConnected(false);
+            clearInterval(gamepadPollInterval);
+            gamepadPollInterval = setInterval(_gamepadPoll, 500);
+        }
+    }
+}
+
+var gamepadRAFStart;
+var lastUpdateSent = 0;
+function _gamepadLoop() {
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+    if (!gamepads) {
+        return;
+    }
+  
+    var gp = gamepads[0];
+    if (!gp) {
+        return;
+    }
+
+    // Get axes + buttons
+    var axes = [], buttons = [];
+    for (var i = 0; i < gp.axes.length; i++) {
+        axes[i] = gp.axes[i].toFixed(4);
+    }
+    for (i = 0; i < gp.buttons.length; i++) {
+        var val = gp.buttons[i];
+        var pressed = val == 1.0;
+        if (typeof(val) === 'object') {
+            pressed = val.pressed;
+            val = val.value;
+        }
+
+        buttons[i] = pressed;
+    }
+    
+    // TODO Send this over the socket
+    if (isActive) {
+        var currTime = Date.now();
+        if (currTime - lastUpdateSent > 20) {
+            socket.emit('joystick', {
+                axes: axes,
+                buttons: buttons
+            });
+            lastUpdateSent = currTime;
+        }
+        
+    }
+
+    gamepadRAFStart = requestAnimationFrame(_gamepadLoop);
+}
+
+window.addEventListener("gamepadconnected", function(e) { gamepadHandler(e, true); }, false);
+window.addEventListener("gamepaddisconnected", function(e) { gamepadHandler(e, false); }, false);
 
 // Disable all buttons first
 compileButton.disabled = true;
@@ -121,6 +227,12 @@ socket.on('referenceData', function (data) {
     // Generate the snippets
     snippets = data.snippets;
     updateSnippets();
+
+    // Load the initial template (only if we haven't loaded before)
+    if (data.templates[0] && !templateLoaded) {
+        codeEditor.setValue(data.templates[0].data);
+        templateLoaded = true;
+    }
 });
 
 socket.on('outputMessage', function (msgData) {
@@ -157,6 +269,7 @@ socket.on('active', function () {
 });
 
 socket.on('inactive', function (data) {
+    isActive = false;
     compileButton.disabled = true;
     stopButton.disabled = true;
     disableButton.disabled = true;
@@ -226,10 +339,6 @@ var codeEditor = CodeMirror(layoutEditorSection, {
 	mode: 'text/x-java',
 	indentUnit: 4
 });
-
-if (FILE_TEMPLATES[0]) {
-    codeEditor.setValue(FILE_TEMPLATES[0].data);
-}
 
 function onResize() {
 	var height = layoutEditorSection.getBoundingClientRect().height;

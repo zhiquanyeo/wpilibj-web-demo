@@ -99,7 +99,7 @@ var robot = new Robot(robotConfig);
 var server = new NomadServer(6969);
 
 // Set up the UserManager
-var userManager = new UserManager(server);
+var userManager = new UserManager(server, cfgWorkspaceDir);
 
 // Robot "I/O"
 // events from 'server' represent commands from the robot program
