@@ -86,24 +86,20 @@ class UserManager extends EventEmitter {
 					buf.writeFloatBE(data.axes[i], offset);
 				}
 				var btnCountOffset = bufferSize - 4;
-				// build up the ints
-				var temp = 0;
-				for (var i = 0; i < numButtons; i++) {
-					temp |= (data.buttons[i] ? 1 : 0);
-					if (i < numButtons - 1) {
-						temp << 1;
-					}
-				}
-				for (var i = 0; i < (24 - numButtons - 1); i++) {
-					temp << 1;
-				}
-				var btnByte1 = (temp >> 16) & 0xFF;
-				var btnByte2 = (temp >> 8) & 0xFF;
-				var btnByte3 = (temp & 0xFF);
-				buf.writeUInt8(btnCountOffset, btnByte1);
-				buf.writeUInt8(btnCountOffset + 1, btnByte2);
-				buf.writeUInt8(btnCountOffset + 2, btnByte3);
+				buf.writeUInt8(numButtons, btnCountOffset);
 
+				var buttonData = 0;
+				for (var i = 0; i < numButtons; i++) {
+					var btnVal = (data.buttons[i] ? 1 : 0);
+					buttonData |= (btnVal << i);
+				}
+				var btnByte1 = (buttonData >> 16) & 0xFF;
+				var btnByte2 = (buttonData >> 8) & 0xFF;
+				var btnByte3 = (buttonData & 0xFF);
+				buf.writeUInt8(btnByte1, btnCountOffset + 1);
+				buf.writeUInt8(btnByte2, btnCountOffset + 2);
+				buf.writeUInt8(btnByte3, btnCountOffset + 3);
+				// build up the ints
 				this.d_joystickClient.send(buf, 1120, '127.0.0.1', (err) => {
 					if (err) {
 						console.error(err);
