@@ -87,8 +87,6 @@ var REFERENCE_DATA = {
 
 // === END DOCUMENTATION GENERATION ===
 
-var templateString = 'var FILE_TEMPLATES = ' + JSON.stringify(templateFileData, null, 4);
-fs.writeFileSync(PUBLIC_JS_DIR + '/templates.js', templateString);
 
 // Now we should be ready to start
 // Initialize the robot hardware
