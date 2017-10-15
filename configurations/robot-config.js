@@ -10,6 +10,8 @@ function getConfig(type) {
     if (type === 'debug') {
         var MockI2C = require('@ftl-robots/ftl-mocks').I2C;
         var MockAStar = require('@ftl-robots/ftl-mocks').AstarBoard;
+        
+        console.log('Starting Mock I2C on *:5001');
         i2cImplementation = new MockI2C(5001);
         deviceSpec = {
             id: 'main-board',
@@ -19,6 +21,10 @@ function getConfig(type) {
                 addr: 20
             }
         };
+
+        // Also start up the fake Astar board
+        console.log('Starting Mock Astar Board on *:5002');
+        var mockBoard = new MockAStar(i2cImplementation, 5002);
     }
     else {
         var RaspiI2C = require('@ftl-robots/ftl-standard-interface-hw-raspi').RaspiI2C;
