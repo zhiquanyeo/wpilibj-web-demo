@@ -63,6 +63,9 @@ class NomadDirectServer extends EventEmitter {
         if (mode === 'disabled') {
             this.emit('disableRobot');
         }
+        else {
+            this.emit('enableRobot');
+        }
         this.broadcast('M:' + mode);
     }
     

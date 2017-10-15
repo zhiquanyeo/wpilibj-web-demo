@@ -53,6 +53,7 @@ class UserManager extends EventEmitter {
 		// Set mode that the robot program will use
 		socket.on('mode', function (mode) {
 			this.d_nomadServer.setRobotMode(mode);
+			this.emit('robotModeChanged', mode);
 		}.bind(this));
 
 		// Relinquish position in queue and insert at the back

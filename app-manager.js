@@ -130,7 +130,7 @@ class AppManager extends EventEmitter {
                 }
 
                 this.d_app = spawn('java', ['-cp', cpString, 
-                                            'edu.wpi.first.wpilibj.RobotBase',
+                                            'edu.wpi.first.wpilibj.RobotRunner',
                                             '-m', 'direct',
                                             '-h', 'tcp://localhost:6969',
                                             'TestRobot'], {

@@ -111,6 +111,10 @@ server.on('pwmOutput', function (data) {
 	robot.writePWM(data.channel, data.value);
 });
 
+server.on('enableRobot', function () {
+	robot.enable();
+})
+
 server.on('disableRobot', function () {
 	console.log('Robot Disabled');
 	robot.disable();
