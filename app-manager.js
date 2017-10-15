@@ -173,6 +173,7 @@ class AppManager extends EventEmitter {
                     }
                     
                     socket.emit('appStopped');
+                    this.emit('appStopped');
                     this.d_appRunning = false;
                 }.bind(this));
 

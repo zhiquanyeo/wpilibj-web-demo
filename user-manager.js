@@ -47,7 +47,9 @@ class UserManager extends EventEmitter {
         socket.on('stopApp', function () {
             if (this.d_appManager.appRunning) {
                 this.d_appManager.stopApp();
-            }
+			}
+			
+			this.emit('appStopped');
         }.bind(this));
 
 		// Set mode that the robot program will use

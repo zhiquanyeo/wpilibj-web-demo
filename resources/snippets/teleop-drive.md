@@ -18,6 +18,9 @@ protected void teleopDrive(Joystick gamepad) {
     double moveVal = gamepad.getRawAxis(1); // Left stick, y-axis
     double turnVal = gamepad.getRawAxis(2); // right stick, x-axis
 
+    // If the robot turns the wrong way, uncomment the line below
+    //turnVal = -turnVal;
+
     drivetrain.arcadeDrive(moveVal, turnVal);
 }
 ```

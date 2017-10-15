@@ -118,7 +118,11 @@ server.on('enableRobot', function () {
 server.on('disableRobot', function () {
 	console.log('Robot Disabled');
 	robot.disable();
-})
+});
+
+userManager.on('appStopped', function () {
+	robot.disable();
+});
 
 app.use(express.static('public_html'));
 
