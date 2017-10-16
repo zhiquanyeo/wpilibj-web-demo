@@ -5,7 +5,7 @@ This snippet shows an example of how to use a `Joystick` component and a `RobotD
 
 ### Requirements
 A `RobotDrive` component named `drivetrain`
-A `Joystick` component named `gamepad`
+A `Joystick` component named `gamepad` and initialized with port 0
 
 ### Usage
 Copy the code in the Snippet section into your TestRobot class, then see the Examples section for usage examples.
