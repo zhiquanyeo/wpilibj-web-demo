@@ -72,7 +72,6 @@ class NomadDirectServer extends EventEmitter {
     broadcast(message) {
         // Really, only the first socket is of interest to us
         if (!this.d_clients[0]) {
-            console.log('No clients!');
             return;
         }
         var client = this.d_clients[0];

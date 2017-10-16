@@ -124,6 +124,44 @@ userManager.on('appStopped', function () {
 	robot.disable();
 });
 
+// Set up a loop to read sensor data every 20ms (or so)
+// TODO - This really should be dynamically done, but... 
+const NUM_DIGITAL_PORTS = 9;
+const NUM_ANALOG_PORTS = 5;
+// We also assume that all these ports will be used for input only
+var digitalInputState = [], analogInputState = [];
+
+// Initialization
+for (var i = 0; i < NUM_DIGITAL_PORTS; i++) {
+	digitalInputState[i] = false;
+	server.setDigitalValue(i, false);
+}
+
+for (var i = 0; i < NUM_ANALOG_PORTS; i++) {
+	analogInputState[i] = 0.0;
+	server.setAnalogValue(i, 0.0);
+}
+
+setInterval(function () {
+	// Query the robot
+	for (var i = 0; i < NUM_DIGITAL_PORTS; i++) {
+		var chState = robot.readDigital(i);
+		if (chState !== digitalInputState[i]) {
+			// There was a change
+			digitalInputState[i] = chState;
+			server.setDigitalValue(i, chState);
+		}
+	}
+
+	for (var i = 0; i < NUM_ANALOG_PORTS; i++) {
+		var chValue = robot.readAnalog(i);
+		if (chValue !== analogInputState[i]) {
+			analogInputState[i] = chValue;
+			server.setAnalogValue(i, chValue);
+		}
+	}
+}, 50);
+
 app.use(express.static('public_html'));
 
 app.get('/', function (req, res) {
