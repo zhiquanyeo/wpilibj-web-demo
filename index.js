@@ -162,7 +162,7 @@ setInterval(function () {
 	}
 }, 50);
 
-app.use(express.static('public_html'));
+app.use(express.static(Path.join(__dirname, 'public_html')));
 
 app.get('/', function (req, res) {
 	res.sendFile(__dirname + '/public_html/index.html');
