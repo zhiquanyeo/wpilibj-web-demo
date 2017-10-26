@@ -131,6 +131,16 @@ class NomadDirectServer extends EventEmitter {
                         message: sysMessage
                     });
                 } break;
+                case 'CFG': {
+                    // Pin configure
+                    channel = parseInt(messageParts[1], 10);
+                    var cValue = parseInt(messageParts[2], 10);
+
+                    this.emit('configurePin', {
+                        channel: channel,
+                        value: cValue
+                    });
+                } break;
                 default: {
                     console.log('Unknown Message: ' + msg);
                 }

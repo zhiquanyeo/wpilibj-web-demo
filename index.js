@@ -120,6 +120,22 @@ server.on('disableRobot', function () {
 	robot.disable();
 });
 
+server.on('configurePin', function (data) {
+	var mode = Constants.PinModes.OUTPUT;
+	switch (data.value) {
+		case 0: {
+			mode = Constants.PinModes.OUTPUT;
+		} break;
+		case 1: {
+			mode = Constants.PinModes.INPUT;
+		} break;
+		case 2: {
+			mode = Constants.PinModes.INPUT_PULLUP;
+		} break;
+	}
+	robot.configureDigitalPinMode(data.channel, mode);
+});
+
 userManager.on('appStopped', function () {
 	robot.disable();
 });
