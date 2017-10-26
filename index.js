@@ -122,16 +122,16 @@ server.on('disableRobot', function () {
 
 server.on('configurePin', function (data) {
 	console.log('configure pin');
-	var mode = Constants.PinModes.OUTPUT;
+	var mode = "OUTPUT";
 	switch (data.value) {
 		case 0: {
-			mode = Constants.PinModes.OUTPUT;
+			mode = "OUTPUT";
 		} break;
 		case 1: {
-			mode = Constants.PinModes.INPUT;
+			mode = "INPUT";
 		} break;
 		case 2: {
-			mode = Constants.PinModes.INPUT_PULLUP;
+			mode = "INPUT_PULLUP";
 		} break;
 	}
 	robot.configureDigitalPinMode(data.channel, mode);
