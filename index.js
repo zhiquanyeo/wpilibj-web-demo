@@ -121,6 +121,7 @@ server.on('disableRobot', function () {
 });
 
 server.on('configurePin', function (data) {
+	console.log('configure pin');
 	var mode = Constants.PinModes.OUTPUT;
 	switch (data.value) {
 		case 0: {
