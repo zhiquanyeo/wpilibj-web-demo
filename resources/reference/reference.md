@@ -12,6 +12,15 @@ Returns `true` if the robot is currently in autonomous mode
 **boolean isOperatorControl()**
 Returns `true` if the robot is currently in teleop mode
 
+### Periodic Functions
+The robot operates in a few different states (autonomous, teleop, disabled) and for each of these, there are two methods that get called.
+
+**[disabled/teleop/autonomous]Init()**
+This function gets called whenever the robot transitions into that specific mode. E.g. If the robot was disabled and is now in autonomous mode, the `autonomousInit()` method gets called. Any code in these functions will get called when the robot transitions into that state.
+
+**[disabled/teleop/autonomous]Periodic()**
+This function gets called periodically (hence the name) when the robot is in a specific mode. E.g. if the robot is in autonomous mode, the `autonomousPeriodic()` method gets called every 20ms. Put code in here that affects robot behavior while it is in that mode. NOTE: It is highly recommended to NOT use `Timer.delay()` in these methods!
+
 ### Moving your robot around
 The following functions can be performed on a `RobotDrive` object:
 

@@ -17,7 +17,7 @@ class AppManager extends EventEmitter {
     get appRunning() {
         return this.d_appRunning;
     }
-    
+
     /**
      * Clean up workspace folders for unused clients
      */
@@ -25,16 +25,16 @@ class AppManager extends EventEmitter {
         if (!clientId) {
             return;
         }
-        
+
         var clientWorkspaceDir = this.d_workspaceDir + '/' + clientId;
         try {
             if (fs.existsSync(clientWorkspaceDir)) {
                 // Delete all files in this
                 fs.readdirSync(clientWorkspaceDir).forEach(function (file, index) {
                     var curPath = clientWorkspaceDir + '/' + file;
-                    fs.unlinkSync(curPath); 
+                    fs.unlinkSync(curPath);
                 });
-                
+
                 fs.rmdirSync(clientWorkspaceDir);
             }
         }
@@ -65,10 +65,10 @@ class AppManager extends EventEmitter {
         var clientWorkspaceDir = this.d_workspaceDir + '/' + clientId
         if (!fs.existsSync(clientWorkspaceDir)) {
             fs.mkdirSync(clientWorkspaceDir);
-            
+
             // Also copy the jar file
             try {
-                fs.linkSync(RESOURCES_DIR + '/nomad-wpilibj-lite.jar', 
+                fs.linkSync(RESOURCES_DIR + '/nomad-wpilibj-lite.jar',
                             clientWorkspaceDir + '/nomad-wpilibj-lite.jar');
             }
             catch (err) {
@@ -76,10 +76,10 @@ class AppManager extends EventEmitter {
             }
         }
         fs.writeFileSync(clientWorkspaceDir + '/TestRobot.java', sourceCode);
-        
+
         socket.emit('compileStarted');
-        
-        var compileTask = spawn('javac', ['-classpath', 'nomad-wpilibj-lite.jar',  
+
+        var compileTask = spawn('javac', ['-classpath', 'nomad-wpilibj-lite.jar',
                                           clientWorkspaceDir + '/TestRobot.java'], {
             cwd: clientWorkspaceDir
         });
@@ -90,7 +90,7 @@ class AppManager extends EventEmitter {
                 message: err.toString(),
                 isError: true
             });
-            
+
             socket.emit('compileComplete', {
                 success: false
             });
@@ -104,7 +104,7 @@ class AppManager extends EventEmitter {
                     message: 'There was an error compiling the file',
                     isError: true
                 });
-                
+
                 socket.emit('compileComplete', {
                     success: false
                 });
@@ -129,7 +129,7 @@ class AppManager extends EventEmitter {
                     cpString = './nomad-wpilibj-lite.jar:./*';
                 }
 
-                this.d_app = spawn('java', ['-cp', cpString, 
+                this.d_app = spawn('java', ['-cp', cpString,
                                             'edu.wpi.first.wpilibj.RobotRunner',
                                             '-m', 'direct',
                                             '-h', 'tcp://localhost:6969',
@@ -171,7 +171,7 @@ class AppManager extends EventEmitter {
                             message: 'Application stopped',
                         });
                     }
-                    
+
                     socket.emit('appStopped');
                     this.emit('appStopped');
                     this.d_appRunning = false;
@@ -198,7 +198,7 @@ class AppManager extends EventEmitter {
             socket.emit('outputMessage', {
                 message: data.toString()
             });
-            
+
         });
 
         compileTask.stderr.on('data', function (data) {
@@ -206,7 +206,7 @@ class AppManager extends EventEmitter {
                 message: data.toString(),
                 isError: true
             });
-            
+
         });
     }
 }

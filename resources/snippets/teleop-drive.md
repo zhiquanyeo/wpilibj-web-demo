@@ -26,7 +26,7 @@ protected void teleopDrive(Joystick gamepad) {
 ```
 
 ### Examples
-Copy the line below into the `operatorControl()` method of your `TestRobot` class. This will then get called multiple times a second when in teleop mode, and allow you to steer the robot using the gamepad.
+Copy the line below into the `teleopPeriodic()` method of your `TestRobot` class. This will then get called multiple times a second when in teleop mode, and allow you to steer the robot using the gamepad.
 
 ```java
 teleopDrive(this.gamepad);
