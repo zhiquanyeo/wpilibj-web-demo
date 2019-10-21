@@ -45,5 +45,8 @@ This function allows you to control the robot in terms of forward/reverse speed,
 ### Utility Functions
 The following are general functions that might be of use:
 
+**long System.currentTimeMillis()**
+This built-in method gets the current timestamp in milliseconds. Useful for checking how long it's been since an event happened.
+
 **Timer.delay(double seconds)**
 This functions sleeps/blocks for the given number of seconds before continuing execution. Motors and outputs continue to run though! Useful for asking the robot to drive for a certain amount of time before stopping.
