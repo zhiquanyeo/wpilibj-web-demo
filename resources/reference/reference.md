@@ -21,6 +21,18 @@ This function gets called whenever the robot transitions into that specific mode
 **[disabled/teleop/autonomous]Periodic()**
 This function gets called periodically (hence the name) when the robot is in a specific mode. E.g. if the robot is in autonomous mode, the `autonomousPeriodic()` method gets called every 20ms. Put code in here that affects robot behavior while it is in that mode. NOTE: It is highly recommended to NOT use `Timer.delay()` in these methods!
 
+### Using the Joystick
+Joysticks can be instantiated using the `Joystick` class, and should be initialized with a port number, in most cases, `0`.
+
+e.g. `Joystick stick = new Joystick(0);`
+
+The `getRawAxis(int axis)` method is used to get the value of one of the joystick's axes, and returns a value between -1.0 and 1.0. For the Logitech gamepad, the stick axes are:
+
+- 0: Left Stick, X axis
+- 1: Left Stick, Y axis
+- 2: Right Stick, X axis
+- 3: Right Stick, Y axis
+
 ### Moving your robot around
 The following functions can be performed on a `RobotDrive` object:
 
