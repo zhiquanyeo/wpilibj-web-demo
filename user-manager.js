@@ -11,7 +11,7 @@ class UserManager extends EventEmitter {
 		this.d_workspaceDir = workspaceDir;
 		this.d_appManager = new AppManager(workspaceDir);
 		this.d_nomadServer = nomadServer;
-		
+
 		this.d_joystickClient = dgram.createSocket('udp4');
 	}
 
@@ -43,12 +43,12 @@ class UserManager extends EventEmitter {
 
 			this.d_appManager.compileAndRun(src, clientId, socket);
 		}.bind(this));
-        
+
         socket.on('stopApp', function () {
             if (this.d_appManager.appRunning) {
                 this.d_appManager.stopApp();
 			}
-			
+
 			this.emit('appStopped');
         }.bind(this));
 
@@ -65,11 +65,11 @@ class UserManager extends EventEmitter {
                 console.warn('Invalid relinquish command');
                 return;
             }
-            
+
             var temp = this.d_clientList[0];
             this.d_clientList.splice(0 ,1);
             this.d_clientList.push(temp);
-            
+
             this.updateClientStatus();
 		}.bind(this));
 
@@ -102,6 +102,7 @@ class UserManager extends EventEmitter {
 				buf.writeUInt8(btnByte1, btnCountOffset + 1);
 				buf.writeUInt8(btnByte2, btnCountOffset + 2);
 				buf.writeUInt8(btnByte3, btnCountOffset + 3);
+
 				// build up the ints
 				this.d_joystickClient.send(buf, 1120, '127.0.0.1', (err) => {
 					if (err) {
@@ -123,15 +124,15 @@ class UserManager extends EventEmitter {
 		}
 
 		delete this.d_clientMap[clientId];
-        
+
         // This should be done in updateClientStatus is there is a change in active user
         if (this.d_appManager.appRunning) {
             this.d_appManager.stopApp();
         }
-        
+
         // Cleanup
         this.d_appManager.cleanup(clientId);
-        
+
 		this.updateClientStatus();
 	}
 

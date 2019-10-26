@@ -40,7 +40,7 @@ var templateLoaded = false;
 var gamepadConnected = false;
 function setGamepadConnected(connected) {
     gamepadConnected = connected;
-    
+
     if (!connected) {
         gamepadStatusLabel.innerHTML = "Gamepad Disconnected";
         gamepadStatusLabel.classList.remove('connected');
@@ -59,9 +59,11 @@ setGamepadConnected(false);
 var gamepads = {};
 
 function _gamepadPoll() {
+
     if (navigator.getGamepads()[0]) {
         setGamepadConnected(true);
         clearInterval(gamepadPollInterval);
+        console.log("Have gamepad, starting loop");
         _gamepadLoop();
     }
     else {
@@ -72,14 +74,17 @@ function _gamepadPoll() {
 var gamepadPollInterval = setInterval(_gamepadPoll, 500);
 
 function gamepadHandler(event, connecting) {
+
     var gamepad = event.gamepad;
     // Note:
     // gamepad === navigator.getGamepads()[gamepad.index]
 
     if (connecting) {
         gamepads[gamepad.index] = gamepad;
+        console.log("Gamepad connected at index " + gamepad.index);
         setGamepadConnected(true);
         clearInterval(gamepadPollInterval);
+        _gamepadLoop();
 
     } else {
         delete gamepads[gamepad.index];
@@ -98,7 +103,7 @@ function _gamepadLoop() {
     if (!gamepads) {
         return;
     }
-  
+
     var gp = gamepads[0];
     if (!gp) {
         return;
@@ -119,7 +124,7 @@ function _gamepadLoop() {
 
         buttons[i] = pressed;
     }
-    
+
     // TODO Send this over the socket
     if (isActive) {
         var currTime = Date.now();
@@ -130,7 +135,7 @@ function _gamepadLoop() {
             });
             lastUpdateSent = currTime;
         }
-        
+
     }
 
     gamepadRAFStart = requestAnimationFrame(_gamepadLoop);
@@ -203,7 +208,7 @@ function updateSnippets() {
     snippetArea.innerHTML = '';
 
     for (var i = 0; i < snippets.length; i++) {
-        snippetSelector.options[i] = 
+        snippetSelector.options[i] =
             new Option(snippets[i].name, snippets[i].name);
     }
 
@@ -252,7 +257,7 @@ socket.on('consoleMessage', function (msgData) {
 });
 
 socket.on('compileStarted', function () {
-    loadingImage.classList.add('visible'); 
+    loadingImage.classList.add('visible');
 });
 
 socket.on('compileComplete', function () {
@@ -297,17 +302,17 @@ socket.on('appStarted', function () {
     disableButton.disabled = false;
     autoButton.disabled = false;
     teleopButton.disabled = false;
-    
+
     // Switch over to the console tab
     consoleTab.click();
 });
 
 socket.on('appStopped', function () {
-    stopButton.disabled = true; 
+    stopButton.disabled = true;
     disableButton.disabled = true;
     autoButton.disabled = true;
     teleopButton.disabled = true;
-    
+
     // Switch to output tab
     outputTab.click();
 });
@@ -365,7 +370,7 @@ stopButton.addEventListener('click', function () {
 });
 
 relinquishButton.addEventListener('click', function () {
-    socket.emit('relinquish'); 
+    socket.emit('relinquish');
 });
 
 clearOutputButton.addEventListener('click', clearOutput);
