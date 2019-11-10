@@ -28,6 +28,8 @@ var loadingImage = document.getElementById('loading-icon');
 
 var referenceSection = document.getElementById('side-reference');
 
+var consoleAutoScrollCheckbox = document.getElementById("console_autoscroll");
+
 // All Application Logic Here
 var clientId;
 var socket = io();
@@ -35,6 +37,8 @@ var socket = io();
 var isActive = false;
 
 var templateLoaded = false;
+
+var consoleScrollInterval = null;
 
 // ==== GAMEPAD METHODS ====
 var gamepadConnected = false;
@@ -391,5 +395,21 @@ teleopButton.addEventListener('click', function () {
     socket.emit('mode', 'teleop');
     modeLabel.innerText = 'Teleop';
 });
+
+consoleAutoScrollCheckbox.addEventListener("change", function() {
+    if (consoleAutoScrollCheckbox.checked) {
+        console.log("Console auto-scroll enabled");
+        consoleScrollInterval = setInterval(function () {
+            consoleSection.scrollTop = consoleSection.scrollHeight;
+        }, 250);
+    }
+    else {
+        console.log("Console auto-scroll disabled");
+        if (consoleScrollInterval) {
+            clearInterval(consoleScrollInterval);
+        }
+        consoleScrollInterval = null;
+    }
+})
 
 }, false);
